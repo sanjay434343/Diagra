@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Diagram Sketch Maker</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 60px 20px;
+      background-image: 
+        linear-gradient(90deg, #111 1px, transparent 1px),
+        linear-gradient(#111 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    h1 {
+      font-weight: 900;
+      font-size: 2.5rem;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      border: 3px solid #fff;
+      padding: 20px 40px;
+      background: #000;
+      position: relative;
+      text-align: center;
+    }
+
+    h1::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      right: -6px;
+      bottom: -6px;
+      border: 3px solid #333;
+      z-index: -1;
+    }
+
+    .input-section {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      margin-bottom: 40px;
+      gap: 20px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px 20px;
+      font-size: 18px;
+      border: 3px solid #fff;
+      background: #000;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      outline: none;
+    }
+
+    input::placeholder {
+      color: #666;
+      text-transform: uppercase;
+    }
+
+    input:focus {
+      border-color: #fff;
+      box-shadow: 0 0 0 3px #333;
+    }
+
+    button {
+      padding: 18px 30px;
+      background: #fff;
+      color: #000;
+      font-weight: 900;
+      cursor: pointer;
+      border: 3px solid #fff;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background: #000;
+      color: #fff;
+      box-shadow: 6px 6px 0 #333;
+      transform: translate(-3px, -3px);
+    }
+
+    button:active {
+      transform: translate(0, 0);
+      box-shadow: 3px 3px 0 #333;
+    }
+
+    .canvas-container {
+      position: relative;
+      margin-top: 20px;
+    }
+
+    .canvas {
+      width: 520px;
+      height: 520px;
+      background: #fff;
+      border: 6px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 0 0 3px #000, 0 0 0 6px #333;
+    }
+
+    .canvas::before {
+      content: '';
+      position: absolute;
+      top: -12px;
+      left: -12px;
+      right: -12px;
+      bottom: -12px;
+      border: 3px solid #666;
+      z-index: -1;
+    }
+
+    .placeholder {
+      color: #999;
+      font-size: 18px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+      user-select: none;
+    }
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      filter: contrast(1.2) brightness(1.1);
+    }
+
+    #imageContainer img {
+      display: block;
+      margin: auto;
+    }
+
+    .loading {
+      color: #666;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    .status-bar {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: 2px solid #333;
+      background: #111;
+      color: #666;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (max-width: 600px) {
+      .canvas {
+        width: 90vw;
+        height: 90vw;
+        max-width: 400px;
+        max-height: 400px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        padding: 15px 25px;
+      }
+
+      input, button {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>◼ Diagram Sketch ◼</h1>
+
+    <div class="input-section">
+      <input type="text" id="promptInput" placeholder="Enter diagram prompt..." />
+      <div class="button-group">
+        <button onclick="generateImage()">⚡ Generate Sketch</button>
+        <button id="saveButton" onclick="saveImage()" style="display: none;">💾 Save Image</button>
+      </div>
+    </div>
+
+    <div class="canvas-container">
+      <div class="canvas" id="imageContainer">
+        <div class="placeholder">◇ Sketch Will Appear Here ◇</div>
+      </div>
+      <div class="status-bar" id="statusBar">Ready to generate</div>
+    </div>
+  </div>
+
+  <script>
+    function updateStatus(message) {
+      document.getElementById('statusBar').textContent = message;
+    }
+
+    function saveImage() {
+      const img = document.querySelector('#imageContainer img');
+      if (!img) {
+        updateStatus("No image to save");
+        return;
+      }
+
+      updateStatus("Preparing download...");
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+
+      ctx.drawImage(img, 0, 0);
+
+      canvas.toBlob(function(blob) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const prompt = document.getElementById('promptInput').value.trim();
+        const filename = prompt ? `diagram-${prompt.replace(/[^a-zA-Z0-9]/g, '-')}.png` : 'diagram-sketch.png';
+
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        updateStatus(`Saved: ${filename}`);
+      }, 'image/png');
+    }
+
+    function generateImage() {
+      const prompt = document.getElementById("promptInput").value.trim();
+      if (!prompt) {
+        updateStatus("Please enter a prompt");
+        return;
+      }
+
+      updateStatus("Generating sketch...");
+
+      const sketchPrompt = `black ink diagram sketch of ${prompt}`;
+      const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(sketchPrompt)}`;
+
+      const img = document.createElement("img");
+      img.crossOrigin = "anonymous"; // ✅ CORS fix for save compatibility on Linux
+
+      const container = document.getElementById("imageContainer");
+      container.innerHTML = '<div class="loading">◆ Loading Sketch ◆</div>';
+
+      img.onload = function () {
+        container.innerHTML = "";
+        container.appendChild(img);
+        updateStatus(`Generated: "${prompt}"`);
+        document.getElementById('saveButton').style.display = 'block';
+      };
+
+      img.onerror = function () {
+        container.innerHTML = '<div class="placeholder">◇ Error Loading Sketch ◇</div>';
+        updateStatus("Error generating sketch");
+        document.getElementById('saveButton').style.display = 'none';
+      };
+
+      img.src = url;
+      img.alt = sketchPrompt;
+    }
+
+    document.getElementById('promptInput').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        generateImage();
+      }
+    });
+  </script>
+</body>
+</html>
