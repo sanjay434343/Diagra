@@ -1,24 +1,7 @@
-# 🌱 Pollinations Random Content Generator
+# 🌱 Pollinations Random Generator
 
-A simple web app that uses the [Pollinations API](https://text.pollinations.ai/) to load random AI-generated content, either in **text** or **image** form — great for creative ideas, symbol art, or surprise visuals.
+> ⚡️ Live AI visual from Pollinations API (changes each refresh)
 
----
-
-## ✨ Features
-
-- 🎲 Loads **random AI-generated content**
-- 📜 Uses `https://text.pollinations.ai/hello/[prompt]` for creative text
-- 🖼 Optionally uses `https://image.pollinations.ai/prompt/[prompt]` for visual output
-- 🎨 Supports ASCII/symbol-style content and surreal image prompts
-- ⚡ Instant in-browser generation (no login required)
+![Random AI Image](https://image.pollinations.ai/prompt/ascii%20art%20made%20of%20symbols%20of%20random%20creature,%20black%20background,%20glow)
 
 ---
-
-## 🔧 Example Usage
-
-**Text API:**
-
-```js
-fetch("https://text.pollinations.ai/hello/random prompt")
-  .then(res => res.text())
-  .then(data => console.log(data));
